@@ -57,6 +57,10 @@ order_items
 products
 ```
 
+### ER-диаграмма
+
+![ER-диаграмма базы данных](images/er_diagram.png)
+
 ### Таблицы
 
 **customers** — информация о клиентах
