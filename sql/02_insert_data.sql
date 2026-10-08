@@ -245,3 +245,49 @@ INSERT INTO order_items (order_id, product_id, quantity) VALUES
 (40, 1, 1),
 (40, 13, 1),
 (40, 5, 1);
+
+-- ============================================
+-- 5. Additional Orders
+-- ============================================
+
+INSERT INTO orders (order_id, customer_id, order_date)
+SELECT
+    gs.order_id,
+    ((gs.order_id - 1) % 20) + 1 AS customer_id,
+    CASE
+        WHEN gs.order_id BETWEEN 41 AND 48
+            THEN DATE '2026-01-01' + ((gs.order_id - 41) * 3)
+        WHEN gs.order_id BETWEEN 49 AND 59
+            THEN DATE '2026-02-01' + ((gs.order_id - 49) * 2)
+        WHEN gs.order_id BETWEEN 60 AND 72
+            THEN DATE '2026-03-01' + ((gs.order_id - 60) * 2)
+        WHEN gs.order_id BETWEEN 73 AND 80
+            THEN DATE '2026-04-01' + ((gs.order_id - 73) * 4)
+        WHEN gs.order_id BETWEEN 81 AND 93
+            THEN DATE '2026-05-01' + ((gs.order_id - 81) * 2)
+        WHEN gs.order_id BETWEEN 94 AND 103
+            THEN DATE '2026-06-01' + ((gs.order_id - 94) * 2)
+        WHEN gs.order_id BETWEEN 104 AND 118
+            THEN DATE '2026-07-01' + ((gs.order_id - 104) * 2)
+        WHEN gs.order_id BETWEEN 119 AND 130
+            THEN DATE '2026-08-01' + ((gs.order_id - 119) * 2)
+    END
+FROM generate_series(41, 130) AS gs(order_id);
+
+-- ============================================
+-- 6. Additional Order Items
+-- ============================================
+
+INSERT INTO order_items (order_id, product_id, quantity)
+SELECT
+    o.order_id,
+    ((o.order_id + n) % 15) + 1 AS product_id,
+    ((o.order_id + n) % 5) + 1 AS quantity
+FROM orders o
+CROSS JOIN generate_series(0, 2) AS n
+WHERE o.order_id BETWEEN 41 AND 130
+  AND n < CASE
+              WHEN o.order_id % 3 = 0 THEN 3
+              WHEN o.order_id % 2 = 0 THEN 2
+              ELSE 1
+          END;
