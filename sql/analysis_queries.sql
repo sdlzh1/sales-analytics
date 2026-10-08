@@ -18,7 +18,7 @@ JOIN order_items oi
 -- Количество заказов
 
 SELECT
-    COUNT(*) AS order_count
+    COUNT(DISTINCT order_id) AS order_count
 FROM orders;
 
 
